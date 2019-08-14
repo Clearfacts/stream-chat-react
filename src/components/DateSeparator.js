@@ -1,6 +1,7 @@
 import React from 'react';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 /**
  * DateSeparator - A simple date seperator
@@ -8,7 +9,7 @@ import PropTypes from 'prop-types';
  * @example ./docs/DateSeparator.md
  * @extends PureComponent
  */
-export class DateSeparator extends React.PureComponent {
+class DateSeparator extends React.PureComponent {
   static propTypes = {
     /** The date to format */
     date: PropTypes.instanceOf(Date),
@@ -21,11 +22,14 @@ export class DateSeparator extends React.PureComponent {
   static defaultProps = {
     position: 'right',
   };
+
   render() {
-    const { position } = this.props;
+    const { intl, position } = this.props;
+
     if (!Date.parse(this.props.date)) {
       return null;
     }
+
     return (
       <div className="str-chat__date-separator">
         {(position === 'right' || position === 'center') && (
@@ -35,12 +39,30 @@ export class DateSeparator extends React.PureComponent {
           {this.props.formatDate
             ? this.props.formatDate(this.props.date)
             : Moment(this.props.date.toISOString()).calendar(null, {
-                lastDay: '[Yesterday]',
-                sameDay: '[Today]',
-                nextDay: '[Tomorrow]',
-                lastWeek: '[Last] dddd',
-                nextWeek: 'dddd',
-                sameElse: 'L',
+                nextWeek: intl.formatMessage({
+                  id: 'date_separator.next_week',
+                  defaultMessage: 'dddd',
+                }),
+                nextDay: intl.formatMessage({
+                  id: 'date_separator.tomorrow',
+                  defaultMessage: '[Tomorrow]',
+                }),
+                sameDay: intl.formatMessage({
+                  id: 'date_separator.today',
+                  defaultMessage: '[Today]',
+                }),
+                lastDay: intl.formatMessage({
+                  id: 'date_separator.yesterday',
+                  defaultMessage: '[Yesterday]',
+                }),
+                lastWeek: intl.formatMessage({
+                  id: 'date_separator.last_week',
+                  defaultMessage: '[Last] dddd',
+                }),
+                sameElse: intl.formatMessage({
+                  id: 'date_separator.else',
+                  defaultMessage: 'L',
+                }),
               })}
         </div>
         {(position === 'left' || position === 'center') && (
@@ -50,3 +72,6 @@ export class DateSeparator extends React.PureComponent {
     );
   }
 }
+
+DateSeparator = injectIntl(DateSeparator);
+export { DateSeparator };

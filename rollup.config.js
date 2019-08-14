@@ -96,6 +96,7 @@ const normalBundle = {
     '@babel/runtime/helpers/classCallCheck',
     '@babel/runtime/helpers/slicedToArray',
     '@babel/runtime/helpers/typeof',
+    'react-intl',
   ],
   plugins: [
     replace({
@@ -109,10 +110,16 @@ const normalBundle = {
     scss({
       output: pkg.style,
     }),
-    copy([{ files: 'src/assets/*', dest: 'dist/assets' }], {
-      verbose: true,
-      watch: process.env.ROLLUP_WATCH,
-    }),
+    copy(
+      [
+        { files: 'src/assets/*', dest: 'dist/assets' },
+        { files: 'src/translations/*', dest: 'dist/translations' },
+      ],
+      {
+        verbose: true,
+        watch: process.env.ROLLUP_WATCH,
+      },
+    ),
     url(),
     commonjs(),
     json(),

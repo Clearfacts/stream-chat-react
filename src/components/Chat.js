@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { ChatContext } from '../context';
+import { IntlProvider } from 'react-intl';
+import messages_en from '../translations/en.json';
 
 const colors = ['light', 'dark'];
 const baseUseCases = ['messaging', 'team', 'commerce', 'gaming', 'livestream'];
@@ -72,10 +74,16 @@ export class Chat extends PureComponent {
      *  - `livestream dark`
      */
     theme: PropTypes.string,
+    /** The App locale */
+    locale: PropTypes.string,
+    /** The messages for the given locale */
+    messages: PropTypes.object,
   };
 
   static defaultProps = {
     theme: 'messaging light',
+    locale: 'en',
+    messages: messages_en,
   };
 
   constructor(props) {
@@ -107,9 +115,11 @@ export class Chat extends PureComponent {
 
   render() {
     return (
-      <ChatContext.Provider value={this.getContext()}>
-        {this.props.children}
-      </ChatContext.Provider>
+      <IntlProvider locale={this.props.locale} messages={this.props.messages}>
+        <ChatContext.Provider value={this.getContext()}>
+          {this.props.children}
+        </ChatContext.Provider>
+      </IntlProvider>
     );
   }
 }
