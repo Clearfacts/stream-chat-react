@@ -102,8 +102,8 @@ class Message extends Component {
      * @param type Type of notification. 'success' | 'error'
      * */
     addNotification: PropTypes.func,
-    /** Sets the editing s */
-    setEditingState: PropTypes.object,
+    /** Sets the editing state */
+    setEditingState: PropTypes.func,
     /** @see See [Channel Context](https://getstream.github.io/stream-chat-react/#channelcontext) */
     updateMessage: PropTypes.func,
     /** @see See [Channel Context](https://getstream.github.io/stream-chat-react/#channelcontext) */
