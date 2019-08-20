@@ -15,8 +15,8 @@ import { EditMessageForm } from './EditMessageForm';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import { isOnlyEmojis, renderText } from '../utils';
-import { FormattedMessage } from 'react-intl';
+import { formatStatusArray, isOnlyEmojis, renderText } from '../utils';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 /**
  * MessageSimple - Render component, should be used together with the Message component
@@ -24,7 +24,7 @@ import { FormattedMessage } from 'react-intl';
  * @example ./docs/MessageSimple.md
  * @extends PureComponent
  */
-export class MessageSimple extends PureComponent {
+class MessageSimple extends PureComponent {
   static propTypes = {
     /** The [message object](https://getstream.io/chat/docs/#message_format) */
     message: PropTypes.object,
@@ -186,32 +186,15 @@ export class MessageSimple extends PureComponent {
     return this.props.isMyMessage(this.props.message);
   }
 
-  formatArray = (arr) => {
-    let outStr = '';
-    const slicedArr = arr
-      .filter((item) => item.id !== this.props.client.user.id)
-      .map((item) => item.name || item.id)
-      .slice(0, 5);
-    const restLength = arr.length - slicedArr.length;
-    const lastStr = restLength > 0 ? ' and ' + restLength + ' more' : '';
-
-    if (slicedArr.length === 1) {
-      outStr = slicedArr[0] + ' ';
-    } else if (slicedArr.length === 2) {
-      //joins all with "and" but =no commas
-      //example: "bob and sam"
-      outStr = slicedArr.join(' and ') + ' ';
-    } else if (slicedArr.length > 2) {
-      //joins all with commas, but last one gets ", and" (oxford comma!)
-      //example: "bob, joe, and sam"
-      outStr = slicedArr.join(', ') + lastStr;
-    }
-
-    return outStr;
-  };
-
   renderStatus = () => {
-    const { readBy, client, message, threadList, lastReceivedId } = this.props;
+    const {
+      readBy,
+      client,
+      message,
+      threadList,
+      lastReceivedId,
+      intl,
+    } = this.props;
     if (!this.isMine() || message.type === 'error') {
       return null;
     }
@@ -219,17 +202,21 @@ export class MessageSimple extends PureComponent {
     if (message.status === 'sending') {
       return (
         <span className="str-chat__message-simple-status">
-          <Tooltip>Sending...</Tooltip>
+          <Tooltip>
+            <FormattedMessage
+              id="message.status.sending"
+              defaultMessage="Sending..."
+            />
+          </Tooltip>
           <LoadingIndicator />
         </span>
       );
     } else if (readBy.length !== 0 && !threadList && !justReadByMe) {
-      const lastReadUser = readBy.filter(
-        (item) => item.id !== client.user.id,
-      )[0];
+      const readByOthers = readBy.filter((item) => item.id !== client.user.id);
+      const lastReadUser = readByOthers[0];
       return (
         <span className="str-chat__message-simple-status">
-          <Tooltip>{this.formatArray(readBy)}</Tooltip>
+          <Tooltip>{formatStatusArray(intl, readByOthers)}</Tooltip>
           <Avatar
             name={lastReadUser.name || lastReadUser.id}
             image={lastReadUser.image}
@@ -249,7 +236,12 @@ export class MessageSimple extends PureComponent {
     ) {
       return (
         <span className="str-chat__message-simple-status">
-          <Tooltip>Delivered</Tooltip>
+          <Tooltip>
+            <FormattedMessage
+              id="message.status.delivered"
+              defaultMessage="Delivered"
+            />
+          </Tooltip>
           <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm3.72 6.633a.955.955 0 1 0-1.352-1.352L6.986 8.663 5.633 7.31A.956.956 0 1 0 4.28 8.663l2.029 2.028a.956.956 0 0 0 1.353 0l4.058-4.058z"
@@ -629,3 +621,6 @@ export class MessageSimple extends PureComponent {
     );
   }
 }
+
+MessageSimple = injectIntl(MessageSimple);
+export { MessageSimple };

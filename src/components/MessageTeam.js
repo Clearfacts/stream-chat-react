@@ -13,7 +13,7 @@ import { MessageInput } from './MessageInput';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import { isOnlyEmojis, renderText } from '../utils';
+import { formatStatusArray, isOnlyEmojis, renderText } from '../utils';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 const reactionSvg =
@@ -178,37 +178,19 @@ class MessageTeam extends PureComponent {
     );
   };
 
-  // https://stackoverflow.com/a/29234240/7625485
-  formatArray = (arr) => {
-    let outStr = '';
-    const slicedArr = arr
-      .filter((item) => item.id !== this.props.client.user.id)
-      .map((item) => item.name || item.id)
-      .slice(0, 5);
-    const restLength = arr.length - slicedArr.length;
-    const lastStr = restLength > 0 ? ' and ' + restLength + ' more' : '';
-
-    if (slicedArr.length === 1) {
-      outStr = slicedArr[0] + ' ';
-    } else if (slicedArr.length === 2) {
-      //joins all with "and" but =no commas
-      //example: "bob and sam"
-      outStr = slicedArr.join(' and ') + ' ';
-    } else if (slicedArr.length > 2) {
-      //joins all with commas, but last one gets ", and" (oxford comma!)
-      //example: "bob, joe, and sam"
-      outStr = slicedArr.join(', ') + lastStr;
-    }
-
-    return outStr;
-  };
-
   isMine() {
     return this.props.isMyMessage(this.props.message);
   }
 
   renderStatus = () => {
-    const { readBy, message, threadList, client, lastReceivedId } = this.props;
+    const {
+      readBy,
+      message,
+      threadList,
+      client,
+      lastReceivedId,
+      intl,
+    } = this.props;
     if (!this.isMine() || message.type === 'error') {
       return null;
     }
@@ -216,17 +198,21 @@ class MessageTeam extends PureComponent {
     if (message.status === 'sending') {
       return (
         <span className="str-chat__message-team-status">
-          <Tooltip>Sending...</Tooltip>
+          <Tooltip>
+            <FormattedMessage
+              id="message.status.sending"
+              defaultMessage="Sending..."
+            />
+          </Tooltip>
           <LoadingIndicator isLoading />
         </span>
       );
     } else if (readBy.length !== 0 && !threadList && !justReadByMe) {
-      const lastReadUser = readBy.filter(
-        (item) => item.id !== client.user.id,
-      )[0];
+      const readByOthers = readBy.filter((item) => item.id !== client.user.id);
+      const lastReadUser = readByOthers[0];
       return (
         <span className="str-chat__message-team-status">
-          <Tooltip>{this.formatArray(readBy)}</Tooltip>
+          <Tooltip>{formatStatusArray(intl, readByOthers)}</Tooltip>
           <Avatar
             name={lastReadUser.name || lastReadUser.id}
             image={lastReadUser.image}
@@ -246,7 +232,12 @@ class MessageTeam extends PureComponent {
     ) {
       return (
         <span className="str-chat__message-team-status">
-          <Tooltip>Delivered</Tooltip>
+          <Tooltip>
+            <FormattedMessage
+              id="message.status.delivered"
+              defaultMessage="Delivered"
+            />
+          </Tooltip>
           <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm3.72 6.633a.955.955 0 1 0-1.352-1.352L6.986 8.663 5.633 7.31A.956.956 0 1 0 4.28 8.663l2.029 2.028a.956.956 0 0 0 1.353 0l4.058-4.058z"

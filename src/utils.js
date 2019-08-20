@@ -98,7 +98,7 @@ export const isPromise = (thing) => {
 export const byDate = (a, b) => a.created_at - b.created_at;
 
 // https://stackoverflow.com/a/29234240/7625485
-export const formatArray = (intl, dict) => {
+export const formatTypingArray = (intl, dict) => {
   const arr2 = Object.keys(dict);
   const arr3 = [];
   arr2.forEach((item, i) =>
@@ -121,7 +121,6 @@ export const formatArray = (intl, dict) => {
   let outStr = '';
   if (arr3.length === 1) {
     outStr = arr3[0] + ' ' + typing;
-    dict;
   } else if (arr3.length === 2) {
     //joins all with "and" but =no commas
     //example: "bob and sam"
@@ -137,6 +136,41 @@ export const formatArray = (intl, dict) => {
       arr3.slice(-1) +
       ' ' +
       typing;
+  }
+
+  return outStr;
+};
+
+// https://stackoverflow.com/a/29234240/7625485
+export const formatStatusArray = (intl, arr) => {
+  let outStr = '';
+  const slicedArr = arr.map((item) => item.name || item.id).slice(0, 5);
+  const restLength = arr.length - slicedArr.length;
+
+  const and = intl.formatMessage({
+    id: 'message_status.and',
+    defaultMessage: 'and',
+  });
+  const more = intl.formatMessage(
+    {
+      id: 'message_status.more',
+      defaultMessage: 'and {count} more',
+    },
+    { count: restLength },
+  );
+
+  const lastStr = restLength > 0 ? ' ' + more : '';
+
+  if (slicedArr.length === 1) {
+    outStr = slicedArr[0] + ' ';
+  } else if (slicedArr.length === 2) {
+    //joins all with "and" but =no commas
+    //example: "bob and sam"
+    outStr = slicedArr.join(' ' + and + ' ') + ' ';
+  } else if (slicedArr.length > 2) {
+    //joins all with commas, but last one gets ", and" (oxford comma!)
+    //example: "bob, joe, and sam"
+    outStr = slicedArr.join(', ') + lastStr;
   }
 
   return outStr;
