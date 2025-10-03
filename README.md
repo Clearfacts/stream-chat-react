@@ -103,4 +103,4 @@ We welcome code changes that improve this library or fix a problem, please make 
 ## Technical debt links
 
 [Barometer IT](https://wolterskluwer.barometerit.com/b/system/041800002496)
-[SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu//dashboard?id=clearfacts%3Astream-chat-react)
+[SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3Astream-chat-react)
