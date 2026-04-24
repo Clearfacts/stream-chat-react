@@ -104,4 +104,4 @@ We welcome code changes that improve this library or fix a problem, please make 
 - [Barometer IT](https://wolterskluwer.barometerit.com/b/system/041800002496)
 - [SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3Astream-chat-react)
 - [Black Duck Project](https://wolterskluwer.app.blackduck.com/api/projects?q=name:stream-chat-react)
-- [Checkmarx Project](https://test4tools.cchaxcess.com/CxWebClient/ProjectStateSummary.aspx?projectid=17858)
+- [Checkmarx Project](https://test4tools.cchaxcess.com/CxWebClient/ProjectStateSummary.aspx?projectid=17118)
