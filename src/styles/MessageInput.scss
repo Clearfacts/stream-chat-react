@@ -79,7 +79,7 @@
       box-shadow: 0 0 0 2px rgba(0, 108, 255, 0.36);
     }
 
-    &:placeholder {
+    &::placeholder {
       color: rgba(0, 0, 0, 0.5);
     }
   }
