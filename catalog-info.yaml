@@ -1,0 +1,17 @@
+# Wolters Kluwer Backstage compliant catalog info
+# See https://backstage.io/docs/features/software-catalog/descriptor-format
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: stream-chat-react
+  description: "React Chat Components"
+  annotations:
+    wolterskluwer.io/bit-id: "041800002496"
+spec:
+  type: library
+  lifecycle: production
+  owner: Glenn.Van-Den-Broeck@wolterskluwer.com
+links:
+  - url: https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3Astream-chat-react
+    type: SAST
+    title: SonarQube
