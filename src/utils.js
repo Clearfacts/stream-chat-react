@@ -1,6 +1,6 @@
 import anchorme from 'anchorme';
 import emojiRegex from 'emoji-regex';
-import ReactMarkdown from 'react-markdown/with-html';
+import ReactMarkdown from 'react-markdown';
 import truncate from 'lodash/truncate';
 import data from 'emoji-mart/data/all.json';
 import React from 'react';
@@ -187,18 +187,16 @@ export const renderText = (message) => {
   }
 
   const allowed = [
-    'html',
-    'root',
-    'text',
-    'break',
-    'paragraph',
-    'emphasis',
+    'br',
+    'p',
+    'em',
     'strong',
-    'link',
-    'list',
-    'listItem',
+    'a',
+    'ol',
+    'ul',
+    'li',
+    'pre',
     'code',
-    'inlineCode',
     'blockquote',
   ];
 
@@ -224,14 +222,9 @@ export const renderText = (message) => {
   }
 
   return (
-    <ReactMarkdown
-      allowedTypes={allowed}
-      source={newText}
-      linkTarget="_blank"
-      plugins={[]}
-      escapeHtml={true}
-      skipHtml={false}
-    />
+    <ReactMarkdown allowedElements={allowed} linkTarget="_blank">
+      {newText}
+    </ReactMarkdown>
   );
 };
 
