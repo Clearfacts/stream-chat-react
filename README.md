@@ -28,7 +28,6 @@ You can read about that in the Chat API docs.
 
 ### Commands
 
-- yarn docs-server
 - yarn lint-fix
 - yarn lint
 
