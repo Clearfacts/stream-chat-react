@@ -508,7 +508,6 @@ class ReactTextareaAutocomplete extends React.Component {
     const value = textarea.value;
 
     if (onChange) {
-      e.persist();
       onChange(e);
     }
 
@@ -632,7 +631,6 @@ class ReactTextareaAutocomplete extends React.Component {
     }
 
     if (onSelect) {
-      e.persist();
       onSelect(e);
     }
   };
@@ -657,7 +655,6 @@ class ReactTextareaAutocomplete extends React.Component {
     }
 
     if (onBlur) {
-      e.persist();
       onBlur(e);
     }
   };

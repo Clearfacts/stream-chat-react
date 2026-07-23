@@ -101,7 +101,9 @@ Common mistakes that hurt performance are:
 We welcome code changes that improve this library or fix a problem, please make sure to follow all best practices and add tests if applicable before submitting a Pull Request on Github. We are very happy to merge your code in the official repository. Make sure to sign our [Contributor License Agreement (CLA)](https://docs.google.com/forms/d/e/1FAIpQLScFKsKkAJI7mhCr7K9rEIOpqIDThrWxuvxnwUq2XkHyG154vQ/viewform) first. See our license file for more details.
 
 ## Technical debt links
+
 - [Barometer IT](https://wolterskluwer.barometerit.com/b/system/041800002496)
 - [SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3Astream-chat-react)
 - [Black Duck Project](https://wolterskluwer.app.blackduck.com/api/projects/020282c9-1fde-46ea-a088-8c35c741f06d)
 - [Checkmarx Project](https://test4tools.cchaxcess.com/CxWebClient/ProjectStateSummary.aspx?projectid=17118)
+
