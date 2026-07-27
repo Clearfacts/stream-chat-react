@@ -99,7 +99,7 @@
   "resolutions": {
     "stream-browserify/**/readable-stream": "2.3.6",
     "node-sass": "npm:sass@^1.15.2",
-    "**/axios": "0.29.0",
+    "**/axios": "0.33.0",
     "**/node-fetch": "2.7.0",
     "**/cipher-base": "1.0.7",
     "**/pbkdf2": "3.1.6",
