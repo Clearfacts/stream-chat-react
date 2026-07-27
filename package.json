@@ -1,6 +1,6 @@
 {
   "name": "@clearfacts/stream-chat-react",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha",
   "description": "React components to create chat conversations or livestream style chat",
   "author": "GetStream",
   "homepage": "https://github.com/Clearfacts/stream-chat-react",
