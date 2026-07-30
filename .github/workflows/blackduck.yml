@@ -33,9 +33,6 @@ jobs:
       - name: Resolve environment variables
         uses: FranzDiebold/github-env-vars-action@v2
 
-      - name: Set git config
-        uses: Clearfacts/cf-actions/git-config@main
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -83,13 +80,6 @@ jobs:
           blackduck-project-name: ${{ github.event.repository.name }}
           blackduck-scan-url: https://wolterskluwer.app.blackduck.com/api/projects/020282c9-1fde-46ea-a088-8c35c741f06d
           github-run-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-      - name: Microsoft Teams Notification
-        if: ${{ always() && github.event_name != 'pull_request' && ((steps.blackduck.outputs.status != '0' && steps.blackduck.outputs.status != '8') || steps.jira.outcome == 'failure') }}
-        uses: Clearfacts/cf-actions/create-teams-message@main
-        with:
-          url: ${{ secrets.WK_TEAMS_WEBHOOK_URL }}
-          message: Black Duck scan error for ${{ github.repository }}/${{ github.ref }}.
 
       - name: Fail workflow
         if: ${{ always() && (steps.blackduck.outputs.status != '0' || steps.jira.outcome == 'failure') }}
