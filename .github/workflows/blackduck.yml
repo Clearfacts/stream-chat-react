@@ -75,7 +75,7 @@ jobs:
         # status code 8 = vulnerabilities found
         if: ${{ github.event_name != 'pull_request' && steps.blackduck.outputs.status == '8' }}
         continue-on-error: true
-        uses: Clearfacts/cf-actions/blackduck-jira@e459d1bb642b4244de81acb11ba74774096eed1b
+        uses: ./.github/actions/blackduck-jira
         with:
           jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
           jira-api-token: ${{ secrets.JIRA_API_TOKEN }}

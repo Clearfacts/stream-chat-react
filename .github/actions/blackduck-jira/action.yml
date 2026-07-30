@@ -1,0 +1,67 @@
+name: Black Duck JIRA issue
+description: Create or reuse a JIRA issue for Black Duck vulnerabilities and move it to the active sprint.
+
+inputs:
+  jira-base-url:
+    description: Base URL of the JIRA instance.
+    required: false
+    default: 'https://clearfacts.atlassian.net'
+  jira-user-email:
+    description: Email address used to authenticate with JIRA.
+    required: true
+  jira-api-token:
+    description: API token used to authenticate with JIRA.
+    required: true
+  jira-project-key:
+    description: JIRA project in which the issue is created.
+    required: false
+    default: 'CLEARFACTS'
+  jira-board-id:
+    description: JIRA board whose active sprint receives the issue.
+    required: false
+    default: '4'
+  jira-team-name:
+    description: Team name contained in the active sprint name.
+    required: true
+  jira-parent-key:
+    description: Parent JIRA issue for Black Duck vulnerability tickets.
+    required: false
+    default: 'CLEARFACTS-4867'
+  jira-issue-type:
+    description: JIRA issue type to create.
+    required: false
+    default: 'Task'
+  blackduck-project-name:
+    description: Black Duck project name used in the issue summary.
+    required: true
+  blackduck-scan-url:
+    description: URL of the Black Duck scan or project.
+    required: true
+  github-run-url:
+    description: URL of the GitHub Actions run that found the vulnerabilities.
+    required: true
+
+outputs:
+  issue-key:
+    description: Key of the created or reused JIRA issue.
+    value: ${{ steps.reconcile.outputs.issue_key }}
+
+runs:
+  using: composite
+  steps:
+    - name: Reconcile JIRA issue
+      id: reconcile
+      shell: bash
+      run: bash "$GITHUB_ACTION_PATH/reconcile.sh"
+      env:
+        JIRA_BASE_URL: ${{ inputs.jira-base-url }}
+        JIRA_USER_EMAIL: ${{ inputs.jira-user-email }}
+        JIRA_API_TOKEN: ${{ inputs.jira-api-token }}
+        JIRA_PROJECT_KEY: ${{ inputs.jira-project-key }}
+        JIRA_BOARD_ID: ${{ inputs.jira-board-id }}
+        JIRA_TEAM_NAME: ${{ inputs.jira-team-name }}
+        JIRA_PARENT_KEY: ${{ inputs.jira-parent-key }}
+        JIRA_ISSUE_TYPE: ${{ inputs.jira-issue-type }}
+        BLACKDUCK_PROJECT_NAME: ${{ inputs.blackduck-project-name }}
+        BLACKDUCK_SCAN_URL: ${{ inputs.blackduck-scan-url }}
+        GITHUB_RUN_URL: ${{ inputs.github-run-url }}
