@@ -418,7 +418,7 @@ export class MessageLivestream extends React.PureComponent {
                       defaultMessage="<strong>/{command}</strong> is not a valid command"
                       values={{
                         command: message.command,
-                        strong: (...chunks) => <strong>{chunks}</strong>,
+                        strong: (chunks) => <strong>{chunks}</strong>,
                       }}
                     />
                   </p>

@@ -1,7 +1,6 @@
 node_modules
 /.cache/
 /public/static/styles.js
-examples/*/src/serviceWorker.js
 /dist/
 /lib/
 /bin/

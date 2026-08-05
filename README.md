@@ -28,7 +28,6 @@ You can read about that in the Chat API docs.
 
 ### Commands
 
-- yarn docs-server
 - yarn lint-fix
 - yarn lint
 
@@ -106,4 +105,3 @@ We welcome code changes that improve this library or fix a problem, please make 
 - [SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3Astream-chat-react)
 - [Black Duck Project](https://wolterskluwer.app.blackduck.com/api/projects/020282c9-1fde-46ea-a088-8c35c741f06d)
 - [Checkmarx Project](https://test4tools.cchaxcess.com/CxWebClient/ProjectStateSummary.aspx?projectid=17858)
-
