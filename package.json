@@ -107,7 +107,8 @@
     "@babel/traverse": "^7.29.10",
     "@braintree/sanitize-url": "^7.1.2",
     "ajv": "^6.15.0",
-    "browserslist": "^4.29.3"
+    "browserslist": "^4.29.3",
+    "elliptic": "^6.6.1"
   },
   "husky": {
     "hooks": {
