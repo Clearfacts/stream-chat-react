@@ -105,7 +105,8 @@
     "**/pbkdf2": "3.1.6",
     "**/tar": "4.4.19",
     "@babel/traverse": "^7.29.10",
-    "@braintree/sanitize-url": "^7.1.2"
+    "@braintree/sanitize-url": "^7.1.2",
+    "ajv": "^6.15.0"
   },
   "husky": {
     "hooks": {
