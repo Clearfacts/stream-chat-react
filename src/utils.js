@@ -5,6 +5,18 @@ import truncate from 'lodash/truncate';
 import data from 'emoji-mart/data/all.json';
 import React from 'react';
 
+/**
+ * Links found in a text, in the shape anchorme 1.x returned with `{ list: true }` ({ raw, protocol, encoded }),
+ * built from anchorme 3 (`anchorme.list`).
+ */
+export const listLinks = (text) =>
+  anchorme.list(text).map((match) => {
+    const protocol = (match.protocol || (match.isEmail ? 'mailto:' : 'http://')).toLowerCase();
+    const withoutProtocol = match.protocol ? match.string.slice(match.protocol.length) : match.string;
+    return { raw: match.string, protocol, encoded: encodeURI(withoutProtocol) };
+  });
+
+
 export const emojiSetDef = {
   spriteUrl: 'https://getstream.imgix.net/images/emoji-sprite.png',
   size: 20,
@@ -200,9 +212,7 @@ export const renderText = (message) => {
     'blockquote',
   ];
 
-  const urls = anchorme(text, {
-    list: true,
-  });
+  const urls = listLinks(text);
   for (const urlInfo of urls) {
     const displayLink = truncate(urlInfo.encoded.replace(/^(www\.)/, ''), {
       length: 20,
