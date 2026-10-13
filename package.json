@@ -19,7 +19,7 @@
     "getstream.io"
   ],
   "dependencies": {
-    "@braintree/sanitize-url": "^3.0.0",
+    "@braintree/sanitize-url": "^7.1.2",
     "@webscopeio/react-textarea-autocomplete": "^4.0.0",
     "anchorme": "^1.1.2",
     "deep-equal": "^1.0.1",
@@ -104,7 +104,8 @@
     "**/cipher-base": "1.0.7",
     "**/pbkdf2": "3.1.6",
     "**/tar": "4.4.19",
-    "@babel/traverse": "^7.29.10"
+    "@babel/traverse": "^7.29.10",
+    "@braintree/sanitize-url": "^7.1.2"
   },
   "husky": {
     "hooks": {
