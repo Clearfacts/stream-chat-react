@@ -106,7 +106,8 @@
     "**/tar": "4.4.19",
     "@babel/traverse": "^7.29.10",
     "@braintree/sanitize-url": "^7.1.2",
-    "ajv": "^6.15.0"
+    "ajv": "^6.15.0",
+    "browserslist": "^4.29.3"
   },
   "husky": {
     "hooks": {
