@@ -11,11 +11,14 @@ import React from 'react';
  */
 export const listLinks = (text) =>
   anchorme.list(text).map((match) => {
-    const protocol = (match.protocol || (match.isEmail ? 'mailto:' : 'http://')).toLowerCase();
-    const withoutProtocol = match.protocol ? match.string.slice(match.protocol.length) : match.string;
+    const protocol = (
+      match.protocol || (match.isEmail ? 'mailto:' : 'http://')
+    ).toLowerCase();
+    const withoutProtocol = match.protocol
+      ? match.string.slice(match.protocol.length)
+      : match.string;
     return { raw: match.string, protocol, encoded: encodeURI(withoutProtocol) };
   });
-
 
 export const emojiSetDef = {
   spriteUrl: 'https://getstream.imgix.net/images/emoji-sprite.png',
@@ -277,4 +280,57 @@ export const MESSAGE_ACTIONS = {
   delete: 'delete',
   flag: 'flag',
   mute: 'mute',
+};
+
+const encodeQueryValue = (val) =>
+  encodeURIComponent(val)
+    .replace(/%40/gi, '@')
+    .replace(/%3A/gi, ':')
+    .replace(/%24/g, '$')
+    .replace(/%2C/gi, ',')
+    .replace(/%20/g, '+')
+    .replace(/%5B/gi, '[')
+    .replace(/%5D/gi, ']');
+
+/**
+ * Query-string serialisation of axios 0.18, which stream-chat 0.13 was written against: nested objects
+ * (e.g. the `payload` of queryChannels / queryUsers) are sent as JSON. axios >= 0.28 would send them as
+ * `payload[filter_conditions][...]` instead, which the Stream API does not read.
+ */
+export const legacyParamsSerializer = (params) => {
+  if (
+    typeof URLSearchParams !== 'undefined' &&
+    params instanceof URLSearchParams
+  ) {
+    return params.toString();
+  }
+  const parts = [];
+  Object.keys(params || {}).forEach((key) => {
+    const val = params[key];
+    if (val === null || typeof val === 'undefined') {
+      return;
+    }
+    const isArray = Array.isArray(val);
+    (isArray ? val : [val]).forEach((v) => {
+      let out = v;
+      if (Object.prototype.toString.call(v) === '[object Date]') {
+        out = v.toISOString();
+      } else if (v !== null && typeof v === 'object') {
+        out = JSON.stringify(v);
+      }
+      parts.push(
+        `${encodeQueryValue(isArray ? `${key}[]` : key)}=${encodeQueryValue(
+          out,
+        )}`,
+      );
+    });
+  });
+  return parts.join('&');
+};
+
+/** stream-chat 0.13 copies client.options into every axios request config. */
+export const applyLegacyParamsSerializer = (client) => {
+  if (client && client.options && !client.options.paramsSerializer) {
+    client.options.paramsSerializer = legacyParamsSerializer;
+  }
 };
