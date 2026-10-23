@@ -1,23 +1,35 @@
 // @flow
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import external from 'rollup-plugin-peer-deps-external';
-import commonjs from 'rollup-plugin-commonjs';
-import scss from 'rollup-plugin-scss';
-import json from 'rollup-plugin-json';
-import url from 'rollup-plugin-url';
-import copy from 'rollup-plugin-copy-glob';
-import resolve from 'rollup-plugin-node-resolve';
-import builtins from '@stream-io/rollup-plugin-node-builtins';
-import globals from 'rollup-plugin-node-globals';
-// eslint-disable-next-line
-import { terser } from 'rollup-plugin-terser';
+import commonjs from '@rollup/plugin-commonjs';
+import sass from 'sass';
+import json from '@rollup/plugin-json';
+import url from '@rollup/plugin-url';
+import copy from 'rollup-plugin-copy';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
+import replace from '@rollup/plugin-replace';
 
-import replace from 'rollup-plugin-replace';
-
-import pkg from './package.json';
-
+import { createRequire } from 'module';
 import process from 'process';
+
+const pkg = createRequire(import.meta.url)('./package.json');
 process.env.NODE_ENV = 'production';
+
+// The (s)css imports in src/index.js mirror src/styles/index.scss. Compile that file once, so the
+// CSS keeps the declared order (bundling the imports one by one reorders them).
+const stylesheet = () => ({
+  name: 'stylesheet',
+  resolveId: (id, importer) => (/\.s?css$/.test(id) && importer ? `\0style:${id}` : null),
+  load: (id) => (id.startsWith('\0style:') ? '' : null),
+  generateBundle() {
+    this.emitFile({
+      type: 'asset',
+      fileName: pkg.style.replace(/^dist\//, ''),
+      source: sass.renderSync({ file: 'src/styles/index.scss', includePaths: ['node_modules'] }).css.toString(),
+    });
+  },
+});
 
 const baseConfig = {
   input: 'src/index.js',
@@ -34,6 +46,7 @@ const normalBundle = {
       file: pkg.main,
       format: 'cjs',
       sourcemap: true,
+      exports: 'named',
     },
     {
       file: pkg.module,
@@ -61,8 +74,6 @@ const normalBundle = {
     'textarea-caret',
     '@braintree/sanitize-url',
     '@webscopeio/react-textarea-autocomplete',
-    '@webscopeio/react-textarea-autocomplete/style.css',
-    'emoji-mart/css/emoji-mart.css',
     'react-dropzone',
     'react-markdown',
     'deep-equal',
@@ -76,7 +87,6 @@ const normalBundle = {
     'prop-types',
     'react-player',
     'react-file-utils',
-    'react-file-utils/dist/index.css',
     'uuid/v4',
     '@fortawesome/react-fontawesome',
     '@fortawesome/free-regular-svg-icons',
@@ -99,29 +109,25 @@ const normalBundle = {
   ],
   plugins: [
     replace({
+      preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     external(),
+    commonjs({ include: /node_modules/, transformMixedEsModules: true }),
+    json(),
     babel({
-      runtimeHelpers: true,
+      babelHelpers: 'runtime',
       exclude: 'node_modules/**',
     }),
-    scss({
-      output: pkg.style,
-    }),
-    copy(
-      [
-        { files: 'src/assets/*', dest: 'dist/assets' },
-        { files: 'src/translations/*', dest: 'dist/translations' },
+    stylesheet(),
+    copy({
+      targets: [
+        { src: 'src/assets/*', dest: 'dist/assets' },
+        { src: 'src/translations/*', dest: 'dist/translations' },
       ],
-      {
-        verbose: true,
-        watch: process.env.ROLLUP_WATCH,
-      },
-    ),
+      verbose: true,
+    }),
     url(),
-    commonjs(),
-    json(),
   ],
 };
 
@@ -134,7 +140,6 @@ const fullBrowserBundle = {
       sourcemap: true,
       name: 'window', // write all exported values to window
       extend: true, // extend window, not overwrite it
-      browser: true,
       globals: {
         react: 'React',
         'react-dom': 'ReactDOM',
@@ -143,33 +148,27 @@ const fullBrowserBundle = {
   ],
   plugins: [
     replace({
+      preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     external(),
-    babel({
-      runtimeHelpers: true,
-      exclude: 'node_modules/**',
-    }),
     {
       name: 'ignore-css-and-scss',
       resolveId: (importee) => (importee.match(/.s?css$/) ? importee : null),
       load: (id) => (id.match(/.s?css$/) ? '' : null),
     },
-    builtins(),
-    resolve({
+    nodeResolve({
       browser: true,
+      preferBuiltins: false,
+    }),
+    commonjs({ include: /node_modules/, transformMixedEsModules: true }),
+    nodePolyfills(),
+    json(),
+    babel({
+      babelHelpers: 'runtime',
+      exclude: 'node_modules/**',
     }),
     url(),
-    commonjs(),
-    json(),
-    globals({
-      process: true,
-      globals: false,
-      buffer: false,
-      dirname: false,
-      filename: false,
-    }),
-    // terser(),
   ],
 };
 
