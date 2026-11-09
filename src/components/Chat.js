@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { ChatContext } from '../context';
+import { applyLegacyParamsSerializer } from '../utils';
 import { IntlProvider } from 'react-intl';
 import messages_en from '../translations/en.json';
 
@@ -88,6 +89,7 @@ export class Chat extends PureComponent {
 
   constructor(props) {
     super(props);
+    applyLegacyParamsSerializer(props.client);
 
     this.state = {
       // currently active channel
@@ -105,6 +107,12 @@ export class Chat extends PureComponent {
       channel,
     }));
   };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.client !== this.props.client) {
+      applyLegacyParamsSerializer(this.props.client);
+    }
+  }
 
   getContext = () => ({
     client: this.props.client,
